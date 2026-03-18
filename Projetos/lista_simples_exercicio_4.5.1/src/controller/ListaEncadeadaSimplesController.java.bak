@@ -1,0 +1,42 @@
+package controller;
+
+import model.estrutura.ListaEncadeadaSimples;
+import model.estrutura.No;
+
+public class ListaEncadeadaSimplesController{
+	private ListaEncadeadaSimples lista;
+	
+	public ListaEncadeadaSimplesController(){
+		lista = new ListaEncadeadaSimples();
+		super();
+	}
+	
+	public void addPessoa(String nome){
+		lista.append(nome);
+	}
+	
+	public void addPessoa(int index, String nome){
+		lista.insert(index, nome);
+	}
+	
+	public int getPessoa(String nome){
+		return lista.getElemento(nome);
+	}
+	
+	public void remover(int index){
+		lista.remove(index);
+	}
+	
+	public Pessoa pegarUltimaPessoa(){
+		No<T> = lista.last();
+		return lista.getPessoa().getNome();
+	}
+	
+	public int total(){
+		return lista.total();
+	}
+	
+	public String mostrarPessoas(){
+		return lista.toString();
+	}
+}

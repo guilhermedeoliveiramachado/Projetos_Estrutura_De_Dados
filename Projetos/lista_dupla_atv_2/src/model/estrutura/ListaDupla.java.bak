@@ -1,0 +1,170 @@
+package model.estrutura;
+
+import java.lang.Exception;
+import model.estrutura.No;
+
+public class ListaDupla<T>{
+	private No<T> inicio = null;
+	private No<T> fim = null;
+	private int total = 0;
+
+	//Adicionar nome já em ordem
+	public void addNome(String nome){
+		No<T> buffer = new No<>(nome);
+
+		if(this.inicio == null){
+			this.fim = buffer;
+			this.inicio = buffer;
+		}else{
+			ordenar(buffer);
+		}
+	}
+
+	public void ordenar(No<T> buffer){
+		No<T> bufferLista = this.inicio;
+
+		
+		while(bufferLista != null){
+			if(bufferLista.getProximo() != null &&  bufferLista.getProximo().getValor().compareTo(buffer.getValor()) > 0){
+				No<T> ex_inicio = bufferLista;
+				No<T> ex_ultimo = bufferLista.getProximo();
+				ex_inicio.setProximo(buffer);
+				buffer.setProximo(ex_ultimo);
+				ex_ultimo.setAnterior(buffer);
+				buffer.setAnterior(ex_inicio);
+				
+				if(bufferLista.getAnterior() == null){
+					this.inicio = ex_inicio;
+				}
+				break;
+			}
+			if(bufferLista.getProximo() == null){
+				bufferLista.setProximo(buffer);
+				buffer.setAnterior(bufferLista);
+				this.fim = buffer;
+				break;
+			}
+			bufferLista = bufferLista.getProximo();
+		}
+	}
+
+	public void ordenar(No<T> itemAnterior, No<T> bufferNovo)throws IllegalArgumentException{
+		while(itemAnterior != null){
+				No<T> ex_ultimo = itemAnterior.getProximo();
+				
+				if(itemAnterior.getValor().compareTo(bufferNovo.getValor()) > 0){
+					itemAnterior.setProximo(bufferNovo);
+					bufferNovo.setProximo(ex_ultimo);
+					ex_ultimo.setAnterior(bufferNovo);
+					bufferNovo.setAnterior(itemAnterior);
+
+				}
+				itemAnterior = itemAnterior.getProximo();
+			}
+	}
+	
+
+	public int getTotal(){
+		if(this.inicio == null){
+			return 0;
+		}
+
+		No<T> buffer = this.inicio;
+		int total_elementos = 0;
+		
+		do{
+			total_elementos++;
+			buffer = buffer.getProximo();
+		}while(buffer != null);
+
+		return total_elementos;
+	}
+
+	public void remove(String nome)throws IllegalArgumentException{
+		if(getTotal() == 0){
+			throw new IllegalArgumentException("Não há elementos na lista para remover!");
+		}
+
+		if(getTotal() == 1 && this.inicio.getValor().equalsIgnoreCase(nome)){
+			this.inicio = null;
+			this.fim = null;
+		}else{
+			No<T> bufferLista = this.inicio;
+
+			while(bufferLista != null){
+				if(bufferLista.getProximo() != null){
+					No<T> ex_anterior = bufferLista.getAnterior();
+					No<T> ex_proximo = bufferLista.getProximo();
+
+					if(bufferLista.getValor().equalsIgnoreCase(nome)){
+						ex_anterior.setProximo(ex_proximo);
+						ex_proximo.setAnterior(ex_anterior);
+
+						if(ex_anterior == null){//Isso quer diser que o bufferLista é o inicio
+							this.inicio = ex_proximo;
+						}
+
+						bufferLista.setValor(null);
+						bufferLista.setProximo(null);
+						bufferLista.setAnterior(null);
+						
+						break;
+					}
+				}
+				
+				if(bufferLista.getProximo() == null){
+					No<T> ex_inicio = bufferLista.getAnterior();
+					ex_inicio.setProximo(null);
+					bufferLista.setValor(null);
+					bufferLista.setAnterior(null);
+					bufferLista.setProximo(null);
+					this.fim = ex_inicio;
+					break;
+				}
+				
+				bufferLista = bufferLista.getProximo();
+			}
+		}		
+	}
+
+	public String imprimir_asc(){
+		if(this.inicio == null){
+			return "[]";
+		}
+
+		StringBuilder builder = new StringBuilder("[");
+		No<T> buffer = this.inicio;
+		builder.append(buffer.getValor());
+
+		while(buffer.getProximo() != null){
+			builder.append(", ");
+			buffer = buffer.getProximo();
+			builder.append(buffer.getValor());
+		}
+
+		builder.append("]");
+		return builder.toString();
+	}
+
+	public String imprimir_desc(){
+		if(this.inicio == null){
+			return "[]";
+		}
+
+		
+
+		StringBuilder builder = new StringBuilder("[");
+		No<T> buffer = this.fim;
+
+		builder.append(buffer.getValor());
+
+		while(buffer.getAnterior() != null){
+			builder.append(", ");
+			buffer = buffer.getAnterior();
+			builder.append(buffer.getValor());
+		}
+
+		builder.append("]");
+		return builder.toString();
+	}
+}
